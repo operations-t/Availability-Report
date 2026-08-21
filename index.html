@@ -1,0 +1,424 @@
+<!DOCTYPE html>
+<html data-theme="light" lang="en">
+<head>
+<meta charset="utf-8"/>
+<meta content="width=device-width, initial-scale=1" name="viewport"/>
+<meta content="#a80d18" name="theme-color"/>
+<meta name="description" content="Shwapno operations availability dashboard: outlet, SKU and outlet-SKU stock availability with dynamic days-of-supply coverage."/>
+<meta name="dashboard-version" content="outlet-sku-combined-v3"/>
+<title>Availability Dashboard · Shwapno Operations</title>
+<link rel="icon" href="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 32 32'%3E%3Crect width='32' height='32' rx='7' fill='%23a80d18'/%3E%3Crect x='7' y='16' width='4.5' height='9' rx='1.4' fill='white'/%3E%3Crect x='13.8' y='11' width='4.5' height='14' rx='1.4' fill='white' opacity='.85'/%3E%3Crect x='20.6' y='7' width='4.5' height='18' rx='1.4' fill='white' opacity='.7'/%3E%3C/svg%3E"/>
+<link href="assets/style.css?v=4" rel="stylesheet"/>
+</head>
+<body class="sidebar-open">
+
+<a class="skip-link" href="#mainContent">Skip to dashboard content</a>
+
+<!-- ===================== Loading / failure state ===================== -->
+<div class="load-state" id="loadState" data-state="loading" role="alert" aria-live="assertive">
+  <div class="load-card">
+    <div class="spinner" aria-hidden="true"></div>
+    <h2 id="loadStateTitle">Loading availability data…</h2>
+    <p id="loadStateMsg">Fetching the latest build. The file is large, so the first load can take a few seconds.</p>
+    <div class="load-progress" id="loadProgressWrap" aria-hidden="true"><i id="loadProgress"></i></div>
+    <div class="actions" id="loadStateActions" hidden>
+      <button class="export-btn primary" id="loadRetryBtn" type="button">Try again</button>
+    </div>
+  </div>
+</div>
+
+<!-- ===================== Filter drawer ===================== -->
+<aside aria-label="Dashboard filters" class="sidebar" id="sidebar">
+  <div class="sidebar-head">
+    <div>
+      <div class="eyebrow">CONTROL CENTER</div>
+      <h2>Filters</h2>
+    </div>
+    <button aria-label="Hide filters" class="icon-btn" id="sidebarClose" type="button">&times;</button>
+  </div>
+
+  <div class="sidebar-scroll">
+
+    <section class="filter-section view-filter view-filter-sku">
+      <div class="filter-section-title">SKU analytics filters</div>
+      <p class="filter-help">Tick any number of values. Options cascade with the current selection, and the counts show how many rows each value still matches.</p>
+      <div class="filter-group"><label for="skuOutletFilter">Outlet code</label><select id="skuOutletFilter"><option value="all">All outlet codes</option></select></div>
+      <div class="filter-group"><label for="skuOutletNameFilter">Outlet name</label><select id="skuOutletNameFilter"><option value="all">All outlet names</option></select></div>
+      <div class="filter-group"><label for="skuLeaderFilter">Leader</label><select id="skuLeaderFilter"><option value="all">All leaders</option></select></div>
+      <div class="filter-group" data-requires-zone><label for="skuZoneFilter">Zone</label><select id="skuZoneFilter"><option value="all">All zones</option></select></div>
+      <div class="filter-group"><label for="skuKviFilter">KVI outlet</label><select id="skuKviFilter"><option value="all">All outlets</option></select></div>
+      <div class="filter-group"><label for="skuCodeFilter">SKU code</label><select id="skuCodeFilter"><option value="all">All SKU codes</option></select></div>
+      <div class="filter-group"><label for="skuDescriptionFilter">SKU description</label><select id="skuDescriptionFilter"><option value="all">All SKU descriptions</option></select></div>
+      <div class="filter-group"><label for="skuTypeFilter">SKU type</label><select id="skuTypeFilter"><option value="all">All types</option></select></div>
+      <div class="filter-group"><label for="skuCatFilter">Category</label><select id="skuCatFilter"><option value="all">All categories</option></select></div>
+      <div class="filter-group"><label for="skuL3Filter">L-3</label><select id="skuL3Filter"><option value="all">All L-3</option></select></div>
+      <div class="filter-group"><label for="skuStockBandFilter">Stock availability band</label><select id="skuStockBandFilter"><option value="all">All stock bands</option></select></div>
+      <div class="filter-group"><label for="skuBandFilter">DOS availability band</label><select id="skuBandFilter"><option value="all">All DOS bands</option></select></div>
+      <input id="skuSearchInput" type="hidden" value=""/>
+      <select id="skuThresholdFilter" hidden><option value="all">All SKUs</option></select>
+    </section>
+
+    <section class="filter-section view-filter view-filter-outlet" hidden>
+      <div class="filter-section-title">Outlet view filters</div>
+      <p class="filter-help">Tick any number of values. Options cascade with the current selection, and the counts show how many outlets each value still matches.</p>
+      <div class="filter-group"><label for="outletSelectFilter">Outlet code</label><select id="outletSelectFilter"><option value="all">All outlet codes</option></select></div>
+      <div class="filter-group"><label for="outletNameFilter">Outlet name</label><select id="outletNameFilter"><option value="all">All outlet names</option></select></div>
+      <div class="filter-group"><label for="outletLeaderFilter">Leader</label><select id="outletLeaderFilter"><option value="all">All leaders</option></select></div>
+      <div class="filter-group" data-requires-zone><label for="outletZoneFilter">Zone</label><select id="outletZoneFilter"><option value="all">All zones</option></select></div>
+      <div class="filter-group"><label for="kviFilter">KVI outlet</label><select id="kviFilter"><option value="all">All outlets</option></select></div>
+      <div class="filter-group"><label for="outletStockBandFilter">Stock availability band</label><select id="outletStockBandFilter"><option value="all">All stock bands</option></select></div>
+      <div class="filter-group"><label for="bandFilter">DOS availability band</label><select id="bandFilter"><option value="all">All DOS bands</option></select></div>
+      <input id="searchInput" type="hidden" value=""/>
+      <select id="outletThresholdFilter" hidden><option value="all">All outlets</option></select>
+    </section>
+
+    <section class="filter-section view-filter view-filter-combo" hidden>
+      <div class="filter-section-title">Outlet &times; SKU report filters</div>
+      <p class="filter-help">Every selection narrows the combined outlet-SKU rows and the downloadable CSV.</p>
+      <div class="filter-group"><label for="comboOutletFilter">Outlet code</label><select id="comboOutletFilter"><option value="all">All outlet codes</option></select></div>
+      <div class="filter-group"><label for="comboOutletNameFilter">Outlet name</label><select id="comboOutletNameFilter"><option value="all">All outlet names</option></select></div>
+      <div class="filter-group"><label for="comboLeaderFilter">Leader</label><select id="comboLeaderFilter"><option value="all">All leaders</option></select></div>
+      <div class="filter-group" data-requires-zone><label for="comboZoneFilter">Zone</label><select id="comboZoneFilter"><option value="all">All zones</option></select></div>
+      <div class="filter-group"><label for="comboKviFilter">KVI outlet</label><select id="comboKviFilter"><option value="all">All outlets</option></select></div>
+      <div class="filter-group"><label for="comboSkuFilter">SKU code</label><select id="comboSkuFilter"><option value="all">All SKU codes</option></select></div>
+      <div class="filter-group"><label for="comboSkuDescriptionFilter">SKU description</label><select id="comboSkuDescriptionFilter"><option value="all">All SKU descriptions</option></select></div>
+      <div class="filter-group"><label for="comboTypeFilter">SKU type</label><select id="comboTypeFilter"><option value="all">All types</option></select></div>
+      <div class="filter-group"><label for="comboCatFilter">Category</label><select id="comboCatFilter"><option value="all">All categories</option></select></div>
+      <div class="filter-group"><label for="comboL3Filter">L-3</label><select id="comboL3Filter"><option value="all">All L-3</option></select></div>
+      <div class="filter-group"><label for="comboStockBandFilter">Stock status</label><select id="comboStockBandFilter"><option value="all">All stock statuses</option></select></div>
+      <div class="filter-group"><label for="comboDosBandFilter">Coverage tier</label><select id="comboDosBandFilter"><option value="all">All coverage tiers</option></select></div>
+    </section>
+
+    <section class="filter-section accent-section">
+      <div class="filter-section-title">DOS calculation</div>
+      <div class="filter-group">
+        <label for="dosDaysSelect">Coverage days</label>
+        <select id="dosDaysSelect"></select>
+      </div>
+      <button class="side-btn secondary" id="dosResetBtn" type="button">Use Excel default</button>
+      <div class="dos-default" id="dosSourceDefault">Excel default: —</div>
+      <p class="filter-help" id="dosFormula" style="margin-bottom:0">Uses the same calculation as Summary!L6.</p>
+    </section>
+
+  </div>
+
+  <div class="sidebar-foot">
+    <div class="filter-status" id="filterStatus">All data selected</div>
+    <button class="side-btn" id="resetAllFilters" type="button">Clear all filters</button>
+  </div>
+</aside>
+<div class="sidebar-overlay" id="sidebarOverlay"></div>
+
+<!-- ===================== App bar ===================== -->
+<header class="appbar">
+  <div class="appbar-left">
+    <button aria-label="Show or hide filters" class="icon-btn" id="sidebarToggle" type="button">&#9776;</button>
+    <div class="brand-mark">
+      <div class="eyebrow">SHWAPNO OPERATIONS</div>
+      <h1>Availability Dashboard</h1>
+    </div>
+  </div>
+  <div class="appbar-right">
+    <button class="solid-btn" id="summaryReportBtn" type="button" title="Open a printable two-page SKU and outlet summary">
+      <span aria-hidden="true">▤</span><span>Summary report</span>
+    </button>
+    <button aria-label="Switch between light and dark theme" class="ghost-btn" id="themeToggle" type="button">
+      <span aria-hidden="true" id="themeIcon">☾</span><span id="themeText">Dark</span>
+    </button>
+    <div class="freshness" id="freshnessPill" title="Data freshness">
+      <span class="dot" aria-hidden="true"></span>
+      <div><strong id="freshnessText">Auto refresh</strong><span id="freshnessSub">Checking…</span></div>
+    </div>
+  </div>
+</header>
+
+<!-- ===================== Sticky control bar ===================== -->
+<div class="controlbar">
+  <div class="controlbar-inner">
+    <div aria-label="Analytics view" class="viewswitch" role="tablist">
+      <button aria-selected="true" class="view-switch-btn active" data-view="sku" id="skuViewBtn" role="tab" type="button">
+        <span aria-hidden="true" class="view-switch-icon">▦</span><span><strong>SKU analytics</strong><small>Type &amp; SKU-wise</small></span>
+      </button>
+      <button aria-selected="false" class="view-switch-btn" data-view="outlet" id="outletViewBtn" role="tab" type="button">
+        <span aria-hidden="true" class="view-switch-icon">⌂</span><span><strong>Outlet view</strong><small>Outlet performance</small></span>
+      </button>
+      <button aria-selected="false" class="view-switch-btn" data-view="combo" id="comboViewBtn" role="tab" type="button">
+        <span aria-hidden="true" class="view-switch-icon">⊞</span><span><strong>Outlet × SKU</strong><small>Combined report</small></span>
+      </button>
+    </div>
+
+    <button class="filter-open-btn" id="openFiltersInline" type="button">
+      <span aria-hidden="true">☰</span><span>Filters</span><span class="count-badge" id="activeFilterCount" hidden>0</span>
+    </button>
+
+    <div class="dos-inline">
+      <label for="dosDaysQuick">DOS</label>
+      <select id="dosDaysQuick" aria-label="Days of supply used for coverage"></select>
+    </div>
+
+    <div class="filter-chips" id="activeFilterChips"><span class="filter-chip neutral">All data</span></div>
+
+    <div class="control-actions">
+      <button class="linkish" id="clearVisibleFilters" type="button">Clear filters</button>
+    </div>
+  </div>
+</div>
+
+<main class="page" id="mainContent">
+
+  <section class="source-strip">
+    <div class="source-item"><span>Source</span><strong id="sourceFile">Loading…</strong></div>
+    <div class="source-item"><span>Drive fetched</span><strong id="sourceModified">—</strong></div>
+    <div class="source-item"><span>Dashboard generated</span><strong id="generatedAt">—</strong></div>
+    <div class="spacer"></div>
+    <button class="button" id="reloadBtn" type="button">Refresh view</button>
+  </section>
+
+  <div class="inline-alert" id="staleBanner" hidden>
+    <span aria-hidden="true">⚠</span>
+    <div><strong>This data may be out of date</strong><span id="staleBannerText"></span></div>
+  </div>
+
+  <div class="view-intro" id="dashboardViewHeader">
+    <div>
+      <div class="eyebrow dark" id="viewEyebrow">SKU ANALYTICS</div>
+      <h2 id="viewHeading">Type &amp; SKU-wise availability</h2>
+      <div class="view-subtitle" id="viewSubtitle">Stock availability plus dynamic <strong data-dos-label>1-day DOS</strong></div>
+    </div>
+  </div>
+
+  <!-- ===================== SKU view ===================== -->
+  <div class="dashboard-view-content" id="skuViewContent">
+
+    <section class="panel insight-panel">
+      <div class="panel-head">
+        <div><div class="eyebrow dark">SKU ANALYTICS</div><h2>SKU performance explorer</h2></div>
+        <div class="row-count" id="skuRowCount"></div>
+      </div>
+      <div class="sku-kpi-grid" id="skuKpiGrid"></div>
+      <div class="sku-outlet-distribution" id="skuOutletDistribution" aria-label="Outlet DOS distribution"></div>
+    </section>
+
+    <section class="type-card-grid" id="typeCardGrid" aria-label="Availability by SKU type"></section>
+
+    <section class="grid-2">
+      <article class="panel">
+        <div class="panel-head">
+          <div><div class="eyebrow dark">ACTION PRIORITY</div><h2 id="skuGapTitle">Highest SKU DOS gaps</h2><div class="priority-count-note">Bar length = number of outlets where this SKU runs short within the selected coverage window</div></div>
+          <button class="export-btn" data-export="sku-gaps" type="button">⇩ CSV</button>
+        </div>
+        <div class="rank-chart" id="skuGapChart"></div>
+      </article>
+      <article class="panel">
+        <div class="panel-head">
+          <div><div class="eyebrow dark">L-3 HOTSPOTS</div><h2 id="l3GapTitle">L-3 SKU risk hotspots</h2><div class="priority-count-note">Bar length = number of SKUs in this L-3 below 80% DOS</div></div>
+          <button class="export-btn" data-export="l3-gaps" type="button">⇩ CSV</button>
+        </div>
+        <div class="rank-chart" id="l3GapChart"></div>
+      </article>
+    </section>
+
+    <section class="panel">
+      <div class="panel-head">
+        <div><div class="eyebrow dark">SKU DETAIL</div><h2>SKU availability &amp; DOS report</h2><div class="table-hint">Search, sort any column, click a row to highlight it, or download exactly what you can see as CSV.</div></div>
+        <div class="panel-actions"><div class="panel-note">Excel-style interactive table</div><button class="export-btn primary" data-export="sku-detail" type="button">⇩ Download CSV</button></div>
+      </div>
+      <div class="table-click-filter-bar" aria-label="Filters applied by clicking a card">
+        <div><span class="table-click-filter-label">FROM CLICKED CARDS</span><div class="table-click-filter-chips" id="skuTableClickFilters"><span class="table-filter-empty">None — click any card above to filter this table</span></div></div>
+        <button class="clear-table-filter-btn" data-clear-table-filters="sku" type="button">Clear card filters</button>
+      </div>
+      <div class="table-toolbar" data-table-tools="skuDetailTable">
+        <div class="table-search-wrap"><span class="table-search-icon" aria-hidden="true">⌕</span><input aria-label="Search SKU table" id="skuTableSearch" placeholder="Search SKU table…" type="search"/></div>
+        <div class="table-row-select"><label for="skuTableRows">Rows</label><select id="skuTableRows"><option value="10">10</option><option selected value="25">25</option><option value="50">50</option><option value="100">100</option><option value="all">All</option></select></div>
+        <div class="table-result-count" id="skuTableResultCount">Showing —</div>
+        <div class="table-pager" id="skuTablePager"><button aria-label="Previous page" data-page-action="prev" data-table-id="skuDetailTable" type="button">‹</button><span>1 / 1</span><button aria-label="Next page" data-page-action="next" data-table-id="skuDetailTable" type="button">›</button></div>
+      </div>
+      <div class="table-wrap excel-wrap">
+        <table class="excel-table" id="skuDetailTable">
+          <thead><tr>
+            <th scope="col" data-sort-key="sku_code">SKU code</th>
+            <th scope="col" data-sort-key="description">Description</th>
+            <th scope="col" data-sort-key="l3">L-3</th>
+            <th scope="col" data-sort-key="cat">Cat</th>
+            <th scope="col" data-sort-key="type">Type</th>
+            <th scope="col" class="num" data-sort-key="available_outlets" data-sort-type="number">Outlets in stock</th>
+            <th scope="col" class="num" data-sort-key="availability" data-sort-type="number">Stock avail. %</th>
+            <th scope="col" class="num" data-sort-key="dos_qty" data-sort-type="number">DOS qty</th>
+            <th scope="col" class="num" data-sort-key="dos_pct" data-sort-type="number">DOS %</th>
+            <th scope="col" class="num" data-sort-key="dos_gap" data-sort-type="number">DOS gap</th>
+            <th scope="col" class="num" data-sort-key="gap_share" data-sort-type="number">Share of gap</th>
+            <th scope="col" class="num" data-sort-key="total_outlets" data-sort-type="number">Reporting outlets</th>
+          </tr></thead>
+          <tbody id="skuTable"></tbody>
+        </table>
+      </div>
+    </section>
+  </div>
+
+  <!-- ===================== Outlet view ===================== -->
+  <div class="dashboard-view-content" hidden id="outletViewContent">
+
+    <section class="panel insight-panel">
+      <div class="panel-head">
+        <div><div class="eyebrow dark">OUTLET ANALYTICS</div><h2>Outlet performance explorer</h2><div class="table-hint">Narrow the outlet set from the filter drawer; every panel below follows.</div></div>
+        <div class="row-count" id="outletExplorerCount"></div>
+      </div>
+      <div class="kpi-grid" id="kpiGrid"></div>
+    </section>
+
+    <section class="grid-2">
+      <article class="panel">
+        <div class="panel-head">
+          <div><div class="eyebrow dark">DISTRIBUTION</div><h2 id="bandPanelTitle">DOS availability bands</h2><div class="priority-count-note">Click a band to filter the outlet table below</div></div>
+          <button class="export-btn" data-export="bands" type="button">⇩ CSV</button>
+        </div>
+        <div class="band-chart" id="bandChart"></div>
+        <div class="band-legend">Bar length shows how many outlets fall in each band. The marker colour shows the severity tier: on target, watch, at risk, critical.</div>
+      </article>
+      <article class="panel">
+        <div class="panel-head">
+          <div><div class="eyebrow dark">RISK WATCH</div><h2 id="riskPanelTitle">Lowest DOS availability outlets</h2></div>
+          <button class="export-btn" data-export="risk" type="button">⇩ CSV</button>
+        </div>
+        <div class="table-toolbar" data-table-tools="riskTable">
+          <div class="table-search-wrap"><span class="table-search-icon" aria-hidden="true">⌕</span><input aria-label="Search outlet risk table" id="riskTableSearch" placeholder="Search outlet risk table…" type="search"/></div>
+          <div class="table-row-select"><label for="riskTableRows">Rows</label><select id="riskTableRows"><option selected value="10">10</option><option value="25">25</option><option value="50">50</option><option value="100">100</option><option value="all">All</option></select></div>
+          <div class="table-result-count" id="riskTableResultCount">Showing —</div>
+          <div class="table-pager" id="riskTablePager"><button aria-label="Previous page" data-page-action="prev" data-table-id="riskTable" type="button">‹</button><span>1 / 1</span><button aria-label="Next page" data-page-action="next" data-table-id="riskTable" type="button">›</button></div>
+        </div>
+        <div class="table-wrap compact excel-wrap">
+          <table class="excel-table" id="riskTable">
+            <thead><tr>
+              <th scope="col" data-sort-key="outlet_name">Outlet</th>
+              <th scope="col" data-sort-key="outlet_code">Code</th>
+              <th scope="col" class="num" data-sort-key="availability" data-sort-type="number">Stock avail.</th>
+              <th scope="col" class="num" data-sort-key="dos_pct" data-sort-type="number">DOS %</th>
+            </tr></thead>
+            <tbody id="bottomTable"></tbody>
+          </table>
+        </div>
+      </article>
+    </section>
+
+    <section class="panel" id="leaderPanel">
+      <div class="panel-head">
+        <div><div class="eyebrow dark">MANAGEMENT VIEW</div><h2 id="leaderPanelTitle">Leader summary</h2></div>
+        <button class="export-btn" data-export="zone" type="button">⇩ CSV</button>
+      </div>
+      <div class="table-toolbar" data-table-tools="zoneTable">
+        <div class="table-search-wrap"><span class="table-search-icon" aria-hidden="true">⌕</span><input aria-label="Search leader summary" id="zoneTableSearch" placeholder="Search leader…" type="search"/></div>
+        <div class="table-row-select"><label for="zoneTableRows">Rows</label><select id="zoneTableRows"><option selected value="10">10</option><option value="25">25</option><option value="50">50</option><option value="100">100</option><option value="all">All</option></select></div>
+        <div class="table-result-count" id="zoneTableResultCount">Showing —</div>
+        <div class="table-pager" id="zoneTablePager"><button aria-label="Previous page" data-page-action="prev" data-table-id="zoneTable" type="button">‹</button><span>1 / 1</span><button aria-label="Next page" data-page-action="next" data-table-id="zoneTable" type="button">›</button></div>
+      </div>
+      <div class="table-wrap excel-wrap"><table class="excel-table" id="zoneTable"></table></div>
+    </section>
+
+    <section class="panel">
+      <div class="panel-head">
+        <div><div class="eyebrow dark">OUTLET DETAIL</div><h2>Outlet availability &amp; DOS</h2><div class="table-hint">Search, sort any column, click a row to highlight it, or download exactly what you can see as CSV.</div></div>
+        <div class="panel-actions"><div class="row-count" id="rowCount"></div><button class="export-btn primary" data-export="outlet-detail" type="button">⇩ Download CSV</button></div>
+      </div>
+      <div class="table-click-filter-bar" aria-label="Filters applied by clicking a card">
+        <div><span class="table-click-filter-label">FROM CLICKED CARDS</span><div class="table-click-filter-chips" id="outletTableClickFilters"><span class="table-filter-empty">None — click any card or band above to filter this table</span></div></div>
+        <button class="clear-table-filter-btn" data-clear-table-filters="outlet" type="button">Clear card filters</button>
+      </div>
+      <div class="table-toolbar" data-table-tools="outletDetailTable">
+        <div class="table-search-wrap"><span class="table-search-icon" aria-hidden="true">⌕</span><input aria-label="Search outlet table" id="outletTableSearch" placeholder="Search outlet table…" type="search"/></div>
+        <div class="table-row-select"><label for="outletTableRows">Rows</label><select id="outletTableRows"><option value="10">10</option><option selected value="25">25</option><option value="50">50</option><option value="100">100</option><option value="all">All</option></select></div>
+        <div class="table-result-count" id="outletTableResultCount">Showing —</div>
+        <div class="table-pager" id="outletTablePager"><button aria-label="Previous page" data-page-action="prev" data-table-id="outletDetailTable" type="button">‹</button><span>1 / 1</span><button aria-label="Next page" data-page-action="next" data-table-id="outletDetailTable" type="button">›</button></div>
+      </div>
+      <div class="table-wrap excel-wrap">
+        <table class="excel-table" id="outletDetailTable">
+          <thead><tr>
+            <th scope="col" data-sort-key="outlet_code">Outlet code</th>
+            <th scope="col" data-sort-key="outlet_name">Outlet</th>
+            <th scope="col" data-sort-key="leader">Leader</th>
+            <th scope="col" data-zone-col hidden data-sort-key="zone">Zone</th>
+            <th scope="col" class="num" data-sort-key="assortment" data-sort-type="number">Assortment</th>
+            <th scope="col" class="num" data-sort-key="available" data-sort-type="number">In stock</th>
+            <th scope="col" class="num" data-sort-key="availability" data-sort-type="number">Stock avail. %</th>
+            <th scope="col" class="num" data-sort-key="dos_qty" data-sort-type="number">AVL-DOS</th>
+            <th scope="col" class="num" data-sort-key="dos_pct" data-sort-type="number">DOS %</th>
+            <th scope="col" data-sort-key="kvi">KVI</th>
+          </tr></thead>
+          <tbody id="outletTable"></tbody>
+        </table>
+      </div>
+    </section>
+  </div>
+
+  <!-- ===================== Outlet × SKU view ===================== -->
+  <div class="dashboard-view-content" hidden id="comboViewContent">
+
+    <section class="panel insight-panel">
+      <div class="panel-head">
+        <div><div class="eyebrow dark">OUTLET × SKU REPORT</div><h2>Combined availability explorer</h2><div class="table-hint">One row per outlet-SKU intersection. Core, KVI and Promo performance at the level you act on.</div></div>
+        <div class="row-count" id="comboExplorerCount">—</div>
+      </div>
+      <div class="combo-kpi-grid" id="comboKpiGrid"></div>
+      <div class="type-card-grid" id="comboTypeGrid" style="margin-top:14px"></div>
+    </section>
+
+    <section class="panel">
+      <div class="panel-head">
+        <div><div class="eyebrow dark">COMBINED DETAIL</div><h2>Outlet × SKU availability &amp; DOS</h2><div class="table-hint">Sort by DOS % to surface the worst intersections first. The CSV contains every row matching the current filters, not just this page.</div></div>
+        <div class="panel-actions"><button class="export-btn primary" data-export="combo-detail" type="button">⇩ Download filtered CSV</button></div>
+      </div>
+      <div class="combo-data-notice" id="comboDataNotice" hidden></div>
+      <div class="table-toolbar" data-table-tools="comboDetailTable">
+        <div class="table-search-wrap"><span class="table-search-icon" aria-hidden="true">⌕</span><input aria-label="Search combined table" id="comboTableSearch" placeholder="Search outlet, SKU, leader, type…" type="search"/></div>
+        <div class="table-row-select"><label for="comboTableRows">Rows</label><select id="comboTableRows"><option value="10">10</option><option selected value="25">25</option><option value="50">50</option><option value="100">100</option></select></div>
+        <div class="table-result-count" id="comboTableResultCount">Showing —</div>
+        <div class="table-pager" id="comboTablePager"><button aria-label="Previous page" data-page-action="prev" data-table-id="comboDetailTable" type="button">‹</button><span>1 / 1</span><button aria-label="Next page" data-page-action="next" data-table-id="comboDetailTable" type="button">›</button></div>
+      </div>
+      <div class="table-wrap combo-table-wrap excel-wrap">
+        <table class="excel-table" id="comboDetailTable">
+          <thead><tr>
+            <th scope="col" data-sort-key="outlet_code">Outlet code</th>
+            <th scope="col" data-sort-key="outlet_name">Outlet name</th>
+            <th scope="col" data-sort-key="leader">Leader</th>
+            <th scope="col" data-zone-col hidden data-sort-key="zone">Zone</th>
+            <th scope="col" data-sort-key="kvi">KVI outlet</th>
+            <th scope="col" data-sort-key="sku_code">SKU code</th>
+            <th scope="col" data-sort-key="description">SKU description</th>
+            <th scope="col" data-sort-key="type">SKU type</th>
+            <th scope="col" data-sort-key="cat">Category</th>
+            <th scope="col" data-sort-key="l3">L-3</th>
+            <th scope="col" data-sort-key="stock" data-sort-type="number">Stock status</th>
+            <th scope="col" class="num" data-sort-key="coverage_days" data-sort-type="number">Coverage days</th>
+            <th scope="col" class="num" data-sort-key="dos_pct" data-sort-type="number">DOS %</th>
+            <th scope="col">Coverage tier</th>
+          </tr></thead>
+          <tbody id="comboTable"></tbody>
+        </table>
+      </div>
+    </section>
+  </div>
+
+  <!-- ===================== Data quality ===================== -->
+  <section class="panel qa-panel">
+    <div class="panel-head">
+      <div><div class="eyebrow dark">DATA QUALITY</div><h2>Automated checks</h2><div class="table-hint">Run on every refresh, against the source workbooks.</div></div>
+      <div class="row-count" id="qaSummary"></div>
+    </div>
+    <div class="qa-list" id="qaList"></div>
+    <details id="qaMethod">
+      <summary>How these numbers are calculated</summary>
+      <div class="qa-list" style="margin-top:10px">
+        <div class="qa-item good"><div class="qa-icon" aria-hidden="true"></div><div><strong>Stock availability</strong><span>An outlet-SKU pair counts as available when its stock reaches the workbook threshold (<span id="methodThreshold">1</span>). Stock availability % is available pairs ÷ total pairs, so it is a simple in-stock rate.</span></div></div>
+        <div class="qa-item good"><div class="qa-icon" aria-hidden="true"></div><div><strong>DOS availability</strong><span id="methodDos">Coverage is scored per pair as min(1, stock ÷ (forecast ÷ 30 × DOS days)) — the Summary!L6 rule. A pair with enough stock for the whole window scores 1; a pair with half of it scores 0.5. DOS % is the average of those scores.</span></div></div>
+        <div class="qa-item good"><div class="qa-icon" aria-hidden="true"></div><div><strong>Counts vs rates</strong><span>"SKUs" and "Outlets" are row counts after filtering. A SKU code carried on more than one list (Core and KVI, for example) is one row per list, so row counts can exceed unique item codes. Rates are unaffected.</span></div></div>
+      </div>
+    </details>
+  </section>
+
+</main>
+
+<footer>Availability Dashboard · Google Drive → GitHub Actions → GitHub Pages</footer>
+
+<script src="assets/app.js?v=4"></script>
+<script src="assets/filters-v2.js?v=4"></script>
+</body>
+</html>
