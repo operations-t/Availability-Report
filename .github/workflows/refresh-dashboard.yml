@@ -1,0 +1,108 @@
+name: Refresh Availability Dashboard
+
+on:
+  workflow_dispatch:
+  schedule:
+    # Timezone-aware cron (GA since March 2026). 11:30 every day, Bangladesh time.
+    - cron: '30 11 * * *'
+      timezone: 'Asia/Dhaka'
+
+permissions:
+  contents: write
+  pages: write
+  id-token: write
+
+env:
+  GOOGLE_DRIVE_FOLDER_URL: 'https://drive.google.com/drive/folders/1OiccpJ7WLxYVBSn6Gw9DMacK2ds0wW4j?usp=sharing'
+  GOOGLE_DRIVE_TARGET_FILENAME: 'Availability Report.xlsx'
+  GOOGLE_DRIVE_STOCK_FILENAME: 'Stock.xlsx'
+
+concurrency:
+  group: availability-pages
+  # Never cancel a run that may already be deploying to Pages.
+  cancel-in-progress: false
+
+jobs:
+  build:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout repository
+        uses: actions/checkout@v6
+
+      - name: Set up Python
+        uses: actions/setup-python@v6
+        with:
+          python-version: '3.12'
+          cache: 'pip'
+
+      - name: Install dependencies
+        run: pip install -r requirements.txt
+
+      - name: Download Availability and Stock workbooks from public Drive
+        run: python scripts/sync_drive.py
+
+      - name: Build dashboard from merged stock
+        run: python scripts/build_data.py raw/'Availability Report.xlsx' raw/'Stock.xlsx'
+
+      - name: Verify build output
+        shell: bash
+        run: |
+          set -euo pipefail
+          test -s data/dashboard.json || { echo "::error::data/dashboard.json missing or empty"; exit 1; }
+          python - <<'PY'
+          import json, pathlib, sys
+          p = pathlib.Path("data/dashboard.json")
+          d = json.loads(p.read_text(encoding="utf-8"))
+          outlets, skus = len(d.get("outlets") or []), len(d.get("skus") or [])
+          print(f"dashboard.json: {p.stat().st_size:,} bytes, {outlets} outlets, {skus} SKU rows")
+          if not outlets or not skus:
+              sys.exit("::error::Build produced no outlet or SKU rows - refusing to publish.")
+          bad = [q for q in (d.get("quality") or []) if q.get("level") == "bad"]
+          for q in bad:
+              print(f"::warning::Data quality: {q.get('title')} - {q.get('detail')}")
+          PY
+
+      - name: Keep public-repo schedules active
+        shell: bash
+        run: |
+          set -euo pipefail
+          MONTH=$(TZ=Asia/Dhaka date +%Y-%m)
+          printf '%s\n' "$MONTH" > .automation-heartbeat
+          if git diff --quiet -- .automation-heartbeat; then
+            echo "Heartbeat already current for $MONTH."
+            exit 0
+          fi
+          git config user.name "github-actions[bot]"
+          git config user.email "41898282+github-actions[bot]@users.noreply.github.com"
+          git add .automation-heartbeat
+          git commit -m "chore: keep dashboard schedule active"
+          # A concurrent push must never fail the deploy; retry once on top of origin.
+          git push || {
+            git pull --rebase --autostash origin "${GITHUB_REF_NAME}" && git push
+          } || echo "::warning::Heartbeat commit could not be pushed; continuing with the deploy."
+
+      - name: Assemble GitHub Pages site
+        run: |
+          set -euo pipefail
+          rm -rf _site
+          mkdir -p _site/assets _site/data
+          cp index.html _site/
+          cp assets/* _site/assets/
+          cp data/dashboard.json _site/data/
+          touch _site/.nojekyll
+
+      - name: Upload Pages artifact
+        uses: actions/upload-pages-artifact@v5
+        with:
+          path: _site
+
+  deploy:
+    environment:
+      name: github-pages
+      url: ${{ steps.deployment.outputs.page_url }}
+    runs-on: ubuntu-latest
+    needs: build
+    steps:
+      - name: Deploy to GitHub Pages
+        id: deployment
+        uses: actions/deploy-pages@v5
