@@ -1,0 +1,31 @@
+{
+  "_comment": "The uploaded sample file was named 'KVI_Outlet.xlsx' (underscore) but the change log text refers to 'KVI Outlet.xlsx' (space) in two places. driveName below uses the space version to match the change log. If the actual Drive file uses an underscore, change kviOutlet.driveName below to 'KVI_Outlet.xlsx' -- this is the only place that needs to change.",
+  "folderId": "1OiccpJ7WLxYVBSn6Gw9DMacK2ds0wW4j",
+  "files": {
+    "classification": {
+      "driveName": "Core, Promo, KVI.xlsx",
+      "destName": "core-promo-kvi.xlsx"
+    },
+    "stock": {
+      "driveName": "stock.xlsx",
+      "destName": "stock.xlsx"
+    },
+    "sales": {
+      "driveName": "DOS.xlsx",
+      "destName": "dos.xlsx"
+    },
+    "zone": {
+      "driveName": "Zone Distribution.xlsx",
+      "destName": "zone-distribution.xlsx"
+    },
+    "ecom": {
+      "driveName": "Ecom.xlsx",
+      "destName": "ecom.xlsx"
+    },
+    "kviOutlet": {
+      "driveName": "KVI Outlet.xlsx",
+      "destName": "kvi-outlet.xlsx",
+      "optional": true
+    }
+  }
+}

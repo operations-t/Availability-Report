@@ -1,0 +1,24 @@
+Verified source regression at Required DOS = 2
+
+Core/KVI/Promo universe
+- Outlets: 989
+- SKUs: 847
+- Slots: 837,683
+- Overall availability: 66.8028359176%
+
+Ecom extension
+- Listed Ecom SKUs: 10,710
+- Availability-covered Ecom SKUs: 827
+- Data-not-covered Ecom SKUs: 9,883
+- Ecom outlets: 101
+- Scored Ecom slots: 83,527
+- Ecom availability: 74.8787817113%
+- Available: 62,544
+- Unavailable: 20,983
+
+Ecom SKU bands
+- 91%-100%: 200
+- 81%-90%: 191
+- 71%-80%: 155
+- 61%-70%: 98
+- Below 60%: 183

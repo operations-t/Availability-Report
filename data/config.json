@@ -1,0 +1,18 @@
+{
+  "sourceSheets": {
+    "classification": "C-P-K",
+    "sales": "DOS",
+    "stock": "Sheet1",
+    "zone": "Final_Zone Dis",
+    "ecomSku": "ECOM SKU",
+    "ecomOutlet": "ECOM OUTLET"
+  },
+  "downloadedFiles": {
+    "classification": "core-promo-kvi.xlsx",
+    "stock": "stock.xlsx",
+    "sales": "dos.xlsx",
+    "zone": "zone-distribution.xlsx",
+    "ecom": "ecom.xlsx",
+    "kviOutlet": "kvi-outlet.xlsx"
+  }
+}

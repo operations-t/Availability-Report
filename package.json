@@ -1,0 +1,20 @@
+{
+  "name": "core-kvi-promo-availability-tracker",
+  "version": "2.4.0",
+  "private": true,
+  "scripts": {
+    "dev": "next dev",
+    "build": "next build",
+    "start": "next start",
+    "test": "node tests/preflight.mjs && node tests/run-tests.mjs"
+  },
+  "dependencies": {
+    "next": "16.3.3",
+    "react": "19.2.8",
+    "react-dom": "19.2.8"
+  },
+  "engines": {
+    "node": ">=20.9.0"
+  },
+  "type": "module"
+}

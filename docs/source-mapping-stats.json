@@ -1,0 +1,473 @@
+{
+  "classification": {
+    "sheet": "C-P-K",
+    "rows": 862,
+    "columns": 5,
+    "headers": [
+      "Article Code",
+      "Name",
+      "Criteria",
+      "CAT3",
+      "New Division"
+    ],
+    "types": {
+      "Article Code": {
+        "text": 0,
+        "number": 862,
+        "blank": 0,
+        "boolean": 0,
+        "dominant": "number"
+      },
+      "Name": {
+        "text": 862,
+        "number": 0,
+        "blank": 0,
+        "boolean": 0,
+        "dominant": "text"
+      },
+      "Criteria": {
+        "text": 862,
+        "number": 0,
+        "blank": 0,
+        "boolean": 0,
+        "dominant": "text"
+      },
+      "CAT3": {
+        "text": 862,
+        "number": 0,
+        "blank": 0,
+        "boolean": 0,
+        "dominant": "text"
+      },
+      "New Division": {
+        "text": 862,
+        "number": 0,
+        "blank": 0,
+        "boolean": 0,
+        "dominant": "text"
+      }
+    },
+    "unique_skus": 847,
+    "duplicate_sku_codes": 15,
+    "extra_rows_from_duplicate_skus": 15,
+    "exact_duplicate_rows": 0,
+    "criteria_counts": {
+      "KVI": 19,
+      "Core": 695,
+      "Promo": 148
+    },
+    "flag_combinations": {
+      "CORE,KVI": 13,
+      "KVI": 6,
+      "CORE": 680,
+      "CORE,PROMO": 2,
+      "PROMO": 146
+    },
+    "blank_article_codes": 0,
+    "blank_names": 0,
+    "blank_criteria": 0,
+    "unique_cat3": 150,
+    "unique_new_division": 10
+  },
+  "zone": {
+    "sheet": "Final_Zone Dis",
+    "rows": 989,
+    "columns": 26,
+    "headers": [
+      "SL",
+      "CODE",
+      "Outlet Name",
+      "Regional Head ID",
+      "Regional Head HR Name",
+      "Leader",
+      "Regional Head Contact",
+      "Zonal ID",
+      "Zonal HR Name",
+      "Zonal",
+      "Zonal Contact",
+      "Launching Date",
+      "SFT",
+      "Format",
+      "Division",
+      "District",
+      "Area",
+      "PNP Non PNP status",
+      "Status",
+      "Geo Location",
+      "Location Type",
+      "Location Type(Dv,Ds,T)",
+      "Population Density",
+      "Income level",
+      "Floor type",
+      "Layout shape"
+    ],
+    "types": {
+      "SL": {
+        "text": 0,
+        "number": 989,
+        "blank": 0,
+        "boolean": 0,
+        "dominant": "number"
+      },
+      "CODE": {
+        "text": 989,
+        "number": 0,
+        "blank": 0,
+        "boolean": 0,
+        "dominant": "text"
+      },
+      "Outlet Name": {
+        "text": 989,
+        "number": 0,
+        "blank": 0,
+        "boolean": 0,
+        "dominant": "text"
+      },
+      "Regional Head ID": {
+        "text": 0,
+        "number": 989,
+        "blank": 0,
+        "boolean": 0,
+        "dominant": "number"
+      },
+      "Regional Head HR Name": {
+        "text": 989,
+        "number": 0,
+        "blank": 0,
+        "boolean": 0,
+        "dominant": "text"
+      },
+      "Leader": {
+        "text": 989,
+        "number": 0,
+        "blank": 0,
+        "boolean": 0,
+        "dominant": "text"
+      },
+      "Regional Head Contact": {
+        "text": 0,
+        "number": 989,
+        "blank": 0,
+        "boolean": 0,
+        "dominant": "number"
+      },
+      "Zonal ID": {
+        "text": 0,
+        "number": 989,
+        "blank": 0,
+        "boolean": 0,
+        "dominant": "number"
+      },
+      "Zonal HR Name": {
+        "text": 989,
+        "number": 0,
+        "blank": 0,
+        "boolean": 0,
+        "dominant": "text"
+      },
+      "Zonal": {
+        "text": 989,
+        "number": 0,
+        "blank": 0,
+        "boolean": 0,
+        "dominant": "text"
+      },
+      "Zonal Contact": {
+        "text": 0,
+        "number": 989,
+        "blank": 0,
+        "boolean": 0,
+        "dominant": "number"
+      },
+      "Launching Date": {
+        "text": 0,
+        "number": 989,
+        "blank": 0,
+        "boolean": 0,
+        "dominant": "number"
+      },
+      "SFT": {
+        "text": 0,
+        "number": 989,
+        "blank": 0,
+        "boolean": 0,
+        "dominant": "number"
+      },
+      "Format": {
+        "text": 989,
+        "number": 0,
+        "blank": 0,
+        "boolean": 0,
+        "dominant": "text"
+      },
+      "Division": {
+        "text": 989,
+        "number": 0,
+        "blank": 0,
+        "boolean": 0,
+        "dominant": "text"
+      },
+      "District": {
+        "text": 989,
+        "number": 0,
+        "blank": 0,
+        "boolean": 0,
+        "dominant": "text"
+      },
+      "Area": {
+        "text": 989,
+        "number": 0,
+        "blank": 0,
+        "boolean": 0,
+        "dominant": "text"
+      },
+      "PNP Non PNP status": {
+        "text": 989,
+        "number": 0,
+        "blank": 0,
+        "boolean": 0,
+        "dominant": "text"
+      },
+      "Status": {
+        "text": 989,
+        "number": 0,
+        "blank": 0,
+        "boolean": 0,
+        "dominant": "text"
+      },
+      "Geo Location": {
+        "text": 989,
+        "number": 0,
+        "blank": 0,
+        "boolean": 0,
+        "dominant": "text"
+      },
+      "Location Type": {
+        "text": 989,
+        "number": 0,
+        "blank": 0,
+        "boolean": 0,
+        "dominant": "text"
+      },
+      "Location Type(Dv,Ds,T)": {
+        "text": 989,
+        "number": 0,
+        "blank": 0,
+        "boolean": 0,
+        "dominant": "text"
+      },
+      "Population Density": {
+        "text": 989,
+        "number": 0,
+        "blank": 0,
+        "boolean": 0,
+        "dominant": "text"
+      },
+      "Income level": {
+        "text": 989,
+        "number": 0,
+        "blank": 0,
+        "boolean": 0,
+        "dominant": "text"
+      },
+      "Floor type": {
+        "text": 989,
+        "number": 0,
+        "blank": 0,
+        "boolean": 0,
+        "dominant": "text"
+      },
+      "Layout shape": {
+        "text": 989,
+        "number": 0,
+        "blank": 0,
+        "boolean": 0,
+        "dominant": "text"
+      }
+    },
+    "unique_outlets": 989,
+    "duplicate_outlet_codes": 0,
+    "extra_rows_from_duplicate_outlets": 0,
+    "blank_codes": 0,
+    "blank_outlet_names": 0,
+    "other_sheets": [
+      [
+        "again in september",
+        "xl/worksheets/sheet2.xml"
+      ]
+    ]
+  },
+  "dos": {
+    "sheet": "DOS",
+    "rows": 647548,
+    "columns": 4,
+    "headers": [
+      "Outlet Code",
+      "Article Code",
+      "POS Sales Qty",
+      "Sales/Day"
+    ],
+    "types": {
+      "Outlet Code": {
+        "text": 647548,
+        "number": 0,
+        "blank": 0,
+        "boolean": 0,
+        "dominant": "text"
+      },
+      "Article Code": {
+        "text": 0,
+        "number": 647548,
+        "blank": 0,
+        "boolean": 0,
+        "dominant": "number"
+      },
+      "POS Sales Qty": {
+        "text": 0,
+        "number": 647548,
+        "blank": 0,
+        "boolean": 0,
+        "dominant": "number"
+      },
+      "Sales/Day": {
+        "text": 0,
+        "number": 647548,
+        "blank": 0,
+        "boolean": 0,
+        "dominant": "number"
+      }
+    },
+    "unique_outlet_sku_pairs": 647548,
+    "duplicate_outlet_sku_pairs": 0,
+    "extra_rows_from_duplicate_pairs": 0,
+    "unique_outlets": 1001,
+    "unique_skus": 847,
+    "blank_join_keys": 0,
+    "blank_pos_sales_qty": 0,
+    "sales_day_formula_mismatch_rows": 0
+  },
+  "stock": {
+    "sheet": "Sheet1",
+    "rows": 847,
+    "columns": 1019,
+    "headers_first": [
+      "ProductCode",
+      "ProductName"
+    ],
+    "outlet_columns": 1017,
+    "unique_outlet_columns": 1017,
+    "duplicate_outlet_headers": 0,
+    "unique_product_codes": 847,
+    "duplicate_product_codes": 0,
+    "extra_rows_from_duplicate_products": 0,
+    "blank_product_codes": 0,
+    "types": {
+      "ProductCode": {
+        "text": 0,
+        "number": 847,
+        "blank": 0,
+        "boolean": 0,
+        "dominant": "number"
+      },
+      "ProductName": {
+        "text": 847,
+        "number": 0,
+        "blank": 0,
+        "boolean": 0,
+        "dominant": "text"
+      },
+      "OutletStockCells": {
+        "text": 0,
+        "number": 861399,
+        "blank": 0,
+        "boolean": 0,
+        "dominant": "number"
+      }
+    },
+    "stock_cells_nonblank": 861399,
+    "stock_cells_blank": 0,
+    "stock_cells_zero": 175107,
+    "stock_cells_negative": 0
+  },
+  "joins": {
+    "grain": "Outlet Code + SKU Code",
+    "universe_assumption": "All unique outlets in Final_Zone Dis \u00d7 all unique classified SKUs (no outlet applicability field supplied)",
+    "universe_outlets": 989,
+    "universe_skus": 847,
+    "universe_slots": 837683,
+    "stock_skus_not_classified_count": 0,
+    "sales_skus_not_classified_count": 0,
+    "stock_records_present_in_universe": 837683,
+    "missing_stock_records_in_universe": 0,
+    "sales_records_present_in_universe": 643541,
+    "missing_sales_records_in_universe": 194142,
+    "stock_outlets_not_in_zone_count": 28,
+    "stock_outlets_not_in_zone_sample": [
+      "E055",
+      "E070",
+      "E075",
+      "E080",
+      "E085",
+      "E086",
+      "E090",
+      "E091",
+      "E092",
+      "E093",
+      "E094",
+      "E095",
+      "E096",
+      "E097",
+      "E098",
+      "E099",
+      "E101",
+      "E102",
+      "E103",
+      "E106",
+      "E107",
+      "E111",
+      "E112",
+      "E115",
+      "F705",
+      "F730",
+      "F824",
+      "F844"
+    ],
+    "zone_outlets_not_in_stock_count": 0,
+    "zone_outlets_not_in_stock_sample": [],
+    "sales_outlets_not_in_zone_count": 12,
+    "sales_outlets_not_in_zone_sample": [
+      "E070",
+      "E075",
+      "E080",
+      "E085",
+      "E086",
+      "E090",
+      "E091",
+      "E092",
+      "E093",
+      "F705",
+      "F730",
+      "F844"
+    ],
+    "zone_outlets_not_in_sales_count": 0,
+    "zone_outlets_not_in_sales_sample": [],
+    "classified_skus_not_in_stock_count": 0,
+    "classified_skus_not_in_stock_sample": [],
+    "classified_skus_not_in_sales_count": 0,
+    "classified_skus_not_in_sales_sample": []
+  },
+  "ecom": {
+    "file": "Ecom.xlsx",
+    "skuSheet": "ECOM SKU",
+    "outletSheet": "ECOM OUTLET",
+    "skuRows": 10721,
+    "uniqueListedSkus": 10710,
+    "duplicateSkuCodes": 3,
+    "duplicateExtraRows": 11,
+    "fmSkus": 596,
+    "outlets": 101,
+    "coveredSkus": 827,
+    "dataNotCoveredSkus": 9883,
+    "scoredSlots": 83527
+  }
+}
